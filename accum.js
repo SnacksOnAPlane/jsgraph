@@ -6,13 +6,17 @@ var centerX = c.width / 2;
 var centerY = c.height / 2;
 var radius = 5;
 var timer = null;
+var grainSize = 4;
+var halfGrain = grainSize / 2;
 
 ctx.beginPath();
 ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-ctx.fillStyle = 'green';
+ctx.fillStyle = 'red';
 ctx.fill();
+console.log(ctx.getImageData(centerX,centerY,2,2));
 
-function isWhite(p) {
+function isRed(p) {
+  return ((p[0] == 255) && (p[1] == 0) && (p[2] == 0) && (p[3] == 255));
   return (((p[0] == 0) && (p[1] == 0) && (p[2] == 0) && (p[3] == 0)) ||
          ((p[0] == 255) && (p[1] == 255) && (p[2] == 255) && (p[3] == 255)));
 }
@@ -46,23 +50,15 @@ function shootRandomly() {
   while((x >= 0) && (x <= c.width) && (y >= 0) && (y <= c.height)) {
     var origX = x;
     var origY = y;
-    x += Math.cos(direction * Math.PI / 180);
-    y += Math.sin(direction * Math.PI / 180);
-    if ((Math.floor(origX) == Math.floor(x)) && (Math.floor(origY) == Math.floor(y))) {
-      continue;
-    }
-    var p = ctx.getImageData(Math.floor(x),Math.floor(y),1,1).data;
-    if (isWhite(p)) {
-      // erase last position
-      ctx.fillStyle = 'white';
-      ctx.fillRect(Math.floor(origX), Math.floor(origY), 1, 1);
-    } else {
-      console.log(p);
-      console.log("not erasing");
+    x += (Math.cos(direction * Math.PI / 180) * grainSize);
+    y += (Math.sin(direction * Math.PI / 180) * grainSize);
+    var p = ctx.getImageData(Math.floor(x), Math.floor(y), 1, 1).data;
+    if (isRed(p)) {
+      ctx.fillStyle = 'red';
+      ctx.fillRect(Math.floor(origX - halfGrain), Math.floor(origY - halfGrain), grainSize, grainSize);
       break;
+    } else {
     }
-    ctx.fillStyle = 'green';
-    ctx.fillRect(Math.floor(x),Math.floor(y),1,1);
   }
 }
 
