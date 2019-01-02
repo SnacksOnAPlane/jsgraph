@@ -5,6 +5,7 @@ var ctx = c.getContext('2d')
 var centerX = c.width / 2;
 var centerY = c.height / 2;
 var radius = 5;
+var timer = null;
 
 ctx.beginPath();
 ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
@@ -65,7 +66,13 @@ function shootRandomly() {
   }
 }
 
-setInterval(shootRandomly, 1);
+function start() {
+  timer = setInterval(shootRandomly, 0.01);
+}
+
+function stop() {
+  clearInterval(timer);
+}
 
 
 // cos 0 = 1
